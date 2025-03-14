@@ -41,5 +41,32 @@ def index():
                            stats=stats)
 
 
+@app.route('/fraude')
+def fraude_analysis():
+        # incidentes de fraude (INCIDENCIA_ID=5)
+        # empleado, nivel, cliente, tipo y día de la semana.
+
+        emp_df = queries.fraude_by_employee()
+        nivel_df = queries.fraude_by_employee_level()
+        cliente_df = queries.fraude_by_client()
+        inci_df = queries.fraude_by_incident_type()
+        weekday_df = queries.fraude_by_weekday()
+
+        # estadisticas basicas
+        stats_emp = {
+            'incident': queries.compute_basic_stats(emp_df, 'NUM_INCIDENTS'),
+            'contact': queries.compute_basic_stats(emp_df, 'NUM_CONTACTS')
+        }
+
+        return render_template(
+            "fraude.html",
+            emp_table=emp_df.to_html(classes='table table-bordered', index=False),
+            nivel_table=nivel_df.to_html(classes='table table-bordered', index=False),
+            cliente_table=cliente_df.to_html(classes='table table-bordered', index=False),
+            inci_table=inci_df.to_html(classes='table table-bordered', index=False),
+            weekday_table=weekday_df.to_html(classes='table table-bordered', index=False),
+            stats_emp=stats_emp
+        )
+
 if __name__ == '__main__':
     app.run(debug=True)

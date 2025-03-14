@@ -6,6 +6,11 @@
 </head>
 <body>
     <h1 class="text-center">Tablas y resultados del Sistema ETL</h1>
+
+    <div style="text-align: right; margin: 1rem;">
+    <a href="{{ url_for('fraude_analysis') }}" class="btn btn-secondary">Ir a análisis de Fraude</a>
+    </div>
+
     <h2>Muestras:</h2>
     {{samples|safe}}
 
