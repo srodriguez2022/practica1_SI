@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-import queries
+from staticWeb import queries
+
 
 app = Flask(__name__)
 
@@ -67,7 +68,3 @@ def fraude_analysis():
         weekday_table=weekday_df.to_html(classes='table table-bordered', index=False),
         stats_emp=stats_emp
     )
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

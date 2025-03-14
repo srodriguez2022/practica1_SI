@@ -1,11 +1,14 @@
 import pandas as pd
 import sqlite3
+import os
 
-database = "../database/data.db"
+
+#database = "../database/data.db"
+database_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'database', 'data.db')
 
 
 def query_to_dataframe(query):
-    con = sqlite3.connect(database)
+    con = sqlite3.connect(database_path)
     df = pd.read_sql_query(query, con)
     con.close()
     return df
@@ -17,7 +20,8 @@ def all_samples():
 
 def tickets_valorated_5():
     return query_to_dataframe(
-        "SELECT T.ID_TICKET, C.ID_CLIENTE, C.NOMBRE, T.SATISFACCION FROM TICKET T JOIN CLIENTE C ON T.CLIENTE_ID = C.ID_CLIENTE WHERE T.SATISFACCION >= 5")
+        "SELECT T.ID_TICKET, C.ID_CLIENTE, C.NOMBRE, T.SATISFACCION FROM TICKET T JOIN CLIENTE C ON T.CLIENTE_ID = "
+        "C.ID_CLIENTE WHERE T.SATISFACCION >= 5")
 
 
 def incidents_per_client():
@@ -126,3 +130,4 @@ def compute_basic_stats(df, column):
         'min': df[column].min(),
         'max': df[column].max()
     }
+
