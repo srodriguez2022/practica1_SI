@@ -42,6 +42,7 @@ def incidents_per_employee():
     return query_to_dataframe(
         "SELECT EMPLEADO_ID,COUNT (DISTINCT TICKET_ID) AS NUM_INCIDENTS  FROM CONTACTO GROUP BY EMPLEADO_ID")
 
+
 #querys para el analisis de fraude
 
 def fraude_by_employee():
@@ -58,7 +59,6 @@ def fraude_by_employee():
 
 
 def fraude_by_employee_level():
-
     query = """
     SELECT E.NIVEL,
            COUNT(DISTINCT T.ID_TICKET) AS NUM_INCIDENTS,
@@ -99,7 +99,6 @@ def fraude_by_incident_type():
     return query_to_dataframe(query)
 
 
-
 def fraude_by_weekday():
     #strftime('%w', ...) para extraer el día (0 = domingo, 1 = lunes...)
 
@@ -127,4 +126,3 @@ def compute_basic_stats(df, column):
         'min': df[column].min(),
         'max': df[column].max()
     }
-
