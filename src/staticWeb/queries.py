@@ -131,3 +131,9 @@ def compute_basic_stats(df, column):
         'max': df[column].max()
     }
 
+
+def average_time_per_incident():
+    return query_to_dataframe(
+        "SELECT ES_MANTENIMIENTO, AVG(JULIANDAY(FECHA_CIERRE) - JULIANDAY(FECHA_APERTURA)) AS AVG_TIME FROM TICKET "
+        "GROUP BY ES_MANTENIMIENTO")
+

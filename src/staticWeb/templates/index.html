@@ -29,8 +29,12 @@
     <h2>Tiempo entre apertura y cierre de incidentes</h2>
     {{time_incident|safe}}
 
-    <h2>Numero de incidentes por empleados</h2>
+    <h2>Número de incidentes por empleados</h2>
     {{incident_employee|safe}}
+
+    <h2>Tablas resultantes de las consultas usadas para diseñar los gráficos:</h2>
+    <h2>Media de tiempo (apertura-cierre) de los incidentes:</h2>
+    {{table_graph1|safe}}
 
     <h2>Estadísticas</h2>
     <ul>
@@ -48,5 +52,9 @@
         <li>Valor mínimo del número de incidentes atendidos por cada empleado:{{stats.Minimo_incidentes_por_empleado}}</li>
         <li>Valor máximo del número de incidentes atendidos por cada empleado:{{stats.Maximo_incidentes_por_empleado}}</li>
     </ul>
+
+    <h2>Gráficos</h2>
+    <h2>Media de tiempos de incidentes</h2>
+    <img src="data:image/png;base64,{{graph_1}}" alt="Gráfico de media de tiempo">
 </body>
 </html>

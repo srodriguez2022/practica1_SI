@@ -1,4 +1,7 @@
+import base64
+import io
 from flask import Flask, render_template
+from matplotlib import pyplot as plt
 from staticWeb import queries
 
 
@@ -14,6 +17,7 @@ def index():
     hours_per_employee_df = queries.hours_per_employee()
     time_per_incident_df = queries.time_per_incident()
     incidents_per_employee_df = queries.incidents_per_employee()
+    average_time_incident_df = queries.average_time_per_incident()
 
     stats = {
         "Numero_de_muestras_totales": len(samples_df),
@@ -31,6 +35,18 @@ def index():
         "Maximo_incidentes_por_empleado": incidents_per_employee_df['NUM_INCIDENTS'].max(),
     }
 
+    # Graph 1
+    fig, ax = plt.subplots()
+    ax.bar(average_time_incident_df['ES_MANTENIMIENTO'].astype(str), average_time_incident_df['AVG_TIME'])
+    ax.set_title("Tiempo medio por incidente")
+    ax.set_xlabel("Es mantenimiento")
+    ax.set_ylabel("Tiempo medio")
+
+    img = io.BytesIO()
+    fig.savefig(img, format='png')
+    img.seek(0)
+    graph_1 = base64.b64encode(img.getvalue()).decode()
+
     return render_template("index.html",
                            samples=samples_df.to_html(classes='table table-bordered'),
                            tickets=tickets_valorated_5_df.to_html(classes='table table-bordered'),
@@ -39,7 +55,9 @@ def index():
                            hours_employee=hours_per_employee_df.to_html(classes='table table-bordered'),
                            time_incident=time_per_incident_df.to_html(classes='table table-bordered'),
                            incident_employee=incidents_per_employee_df.to_html(classes='table table-bordered'),
-                           stats=stats)
+                           stats=stats,
+                           table_graph1=average_time_incident_df.to_html(classes='table table-bordered'),
+                           graph_1=graph_1)
 
 
 @app.route('/fraude')
