@@ -18,6 +18,7 @@ def index():
     time_per_incident_df = queries.time_per_incident()
     incidents_per_employee_df = queries.incidents_per_employee()
     average_time_incident_df = queries.average_time_per_incident()
+    resolution_time_per_incident_df = queries.resolution_time_per_incident()
 
     stats = {
         "Numero_de_muestras_totales": len(samples_df),
@@ -47,6 +48,26 @@ def index():
     img.seek(0)
     graph_1 = base64.b64encode(img.getvalue()).decode()
 
+    # Graph 2
+    fig2, ax2 = plt.subplots(figsize=(15, 4))
+    resolution_time_per_incident_df.boxplot(column='RESOLUTION_TIME', by='INCIDENT_TYPE', ax=ax2)
+    p5 = resolution_time_per_incident_df['RESOLUTION_TIME'].quantile(0.05)
+    p90 = resolution_time_per_incident_df['RESOLUTION_TIME'].quantile(0.90)
+
+    ax2.axhline(p5, color='r', linestyle='--', label='Percentil 5')
+    ax2.axhline(p90, color='g', linestyle='--', label='Percentil 90')
+
+    ax2.set_title("Boxplot de Tiempo de resolución por tipo de incidente")
+    ax2.set_xlabel("Tipo de incidente")
+    ax2.set_ylabel("Tiempo de resolución")
+    ax2.legend()
+    plt.suptitle("")
+
+    img2 = io.BytesIO()
+    fig2.savefig(img2, format='png')
+    img2.seek(0)
+    graph_2 = base64.b64encode(img2.getvalue()).decode()
+
     return render_template("index.html",
                            samples=samples_df.to_html(classes='table table-bordered'),
                            tickets=tickets_valorated_5_df.to_html(classes='table table-bordered'),
@@ -57,7 +78,9 @@ def index():
                            incident_employee=incidents_per_employee_df.to_html(classes='table table-bordered'),
                            stats=stats,
                            table_graph1=average_time_incident_df.to_html(classes='table table-bordered'),
-                           graph_1=graph_1)
+                           graph_1=graph_1,
+                           table_graph2=resolution_time_per_incident_df.to_html(classes='table table-bordered'),
+                           graph_2=graph_2)
 
 
 @app.route('/fraude')

@@ -137,3 +137,9 @@ def average_time_per_incident():
         "SELECT ES_MANTENIMIENTO, AVG(JULIANDAY(FECHA_CIERRE) - JULIANDAY(FECHA_APERTURA)) AS AVG_TIME FROM TICKET "
         "GROUP BY ES_MANTENIMIENTO")
 
+
+def resolution_time_per_incident():
+    return query_to_dataframe("SELECT I.NOMBRE AS INCIDENT_TYPE, (JULIANDAY(FECHA_CIERRE) - JULIANDAY("
+                              "FECHA_APERTURA)) AS"
+                              " RESOLUTION_TIME FROM TICKET T JOIN INCIDENTE I ON T.INCIDENCIA_ID = I.ID_INCIDENTE ")
+
