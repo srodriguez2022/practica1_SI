@@ -12,38 +12,30 @@
     </div>
 
 
-    <h2>Incidentes de fraude por empleado</h2>
+    <h2>Incidentes por empleado</h2>
     {{ emp_table|safe }}
 
-    <h2>Incidentes de fraude por nivel de empleado</h2>
+    <h2>Incidentes por nivel de empleado</h2>
     {{ nivel_table|safe }}
 
-    <h2>Incidentes de fraude por cliente</h2>
+    <h2>Incidentes por cliente</h2>
     {{ cliente_table|safe }}
 
-    <h2>Numero incidentes de tipo de fraude</h2>
+    <h2>Número incidentes por tipo </h2>
     {{ inci_table|safe }}
 
-    <h2>Incidentes de fraude por día de la semana</h2>
+    <h2>Incidentes día de la semana</h2>
     {{ weekday_table|safe }}
 
-    <h2>Estadísticas de fraude (por empleado)</h2>
-    <ul>
-        <li><strong>Mediana (NUM_INCIDENTS):</strong> {{ stats_emp.incident.median }}</li>
-        <li><strong>Media (NUM_INCIDENTS):</strong> {{ stats_emp.incident.mean }}</li>
-        <li><strong>Varianza (NUM_INCIDENTS):</strong> {{ stats_emp.incident.variance }}</li>
-        <li><strong>Mínimo (NUM_INCIDENTS):</strong> {{ stats_emp.incident.min }}</li>
-        <li><strong>Máximo (NUM_INCIDENTS):</strong> {{ stats_emp.incident.max }}</li>
-    </ul>
+    <h2>Numero incidentes tipo fraude</h2>
+    {{ fraude_table|safe }}
 
-<!-- analisis de los contactos
-    <ul>
-        <li><strong>Mediana (NUM_CONTACTS):</strong> {{ stats_emp.contact.median }}</li>
-        <li><strong>Media (NUM_CONTACTS):</strong> {{ stats_emp.contact.mean }}</li>
-        <li><strong>Varianza (NUM_CONTACTS):</strong> {{ stats_emp.contact.variance }}</li>
-        <li><strong>Mínimo (NUM_CONTACTS):</strong> {{ stats_emp.contact.min }}</li>
-        <li><strong>Máximo (NUM_CONTACTS):</strong> {{ stats_emp.contact.max }}</li>
-    </ul>
-    -->
+    <h2>Contactos por los empleados para Fraude</h2>
+    {{ contacts_table|safe }}
+
+   <h2>Estadísticas de fraude (por empleado)</h2>
+    {{ stats_table|safe }}
+
+
 </body>
 </html>

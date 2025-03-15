@@ -64,18 +64,14 @@ def index():
 def fraude_analysis():
     # incidentes de fraude (INCIDENCIA_ID=5)
     # empleado, nivel, cliente, tipo y día de la semana.
-
     emp_df = queries.fraude_by_employee()
     nivel_df = queries.fraude_by_employee_level()
     cliente_df = queries.fraude_by_client()
     inci_df = queries.fraude_by_incident_type()
     weekday_df = queries.fraude_by_weekday()
-
-    # estadisticas basicas
-    stats_emp = {
-        'incident': queries.compute_basic_stats(emp_df, 'NUM_INCIDENTS'),
-        'contact': queries.compute_basic_stats(emp_df, 'NUM_CONTACTS')
-    }
+    fraude_df = queries.fraude_incidents()
+    contacts_df = queries.fraude_employe_contacts()
+    stats = queries.basic_stats_incidents()
 
     return render_template(
         "fraude.html",
@@ -84,5 +80,8 @@ def fraude_analysis():
         cliente_table=cliente_df.to_html(classes='table table-bordered', index=False),
         inci_table=inci_df.to_html(classes='table table-bordered', index=False),
         weekday_table=weekday_df.to_html(classes='table table-bordered', index=False),
-        stats_emp=stats_emp
+        fraude_table=fraude_df.to_html(classes='table table-bordered', index=False),
+        contacts_table=contacts_df.to_html(classes='table table-bordered', index=False),
+        stats_table=stats.to_html(classes='table table-bordered', index=False)
     )
+

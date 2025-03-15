@@ -51,85 +51,159 @@ def incidents_per_employee():
 
 def fraude_by_employee():
     query = """
-    SELECT C.EMPLEADO_ID,
-           COUNT(DISTINCT T.ID_TICKET) AS NUM_INCIDENTS,
-           COUNT(*) AS NUM_CONTACTS
-    FROM TICKET T
-    JOIN CONTACTO C ON T.ID_TICKET = C.TICKET_ID
-    WHERE T.INCIDENCIA_ID = 5
-    GROUP BY C.EMPLEADO_ID
+SELECT
+    e.ID_EMPLEADO AS EMPLEADO,
+    COALESCE(inc.num_incidentes, 0) AS Num_Incidents,
+    COALESCE(ct.num_contacts, 0) AS Num_Contacts
+FROM EMPLEADO e
+LEFT JOIN (
+    SELECT
+         c.EMPLEADO_ID,
+         COUNT(DISTINCT t.ID_TICKET) AS Num_Incidents
+    FROM CONTACTO c
+    JOIN TICKET t ON t.ID_TICKET = c.TICKET_ID
+    GROUP BY c.EMPLEADO_ID
+) inc ON e.ID_EMPLEADO = inc.EMPLEADO_ID
+LEFT JOIN (
+    SELECT
+         EMPLEADO_ID,
+         COUNT(*) AS Num_Contacts
+    FROM CONTACTO
+    GROUP BY EMPLEADO_ID
+) ct ON e.ID_EMPLEADO = ct.EMPLEADO_ID;
+
     """
     return query_to_dataframe(query)
 
 
 def fraude_by_employee_level():
     query = """
-    SELECT E.NIVEL,
-           COUNT(DISTINCT T.ID_TICKET) AS NUM_INCIDENTS,
-           COUNT(*) AS NUM_CONTACTS
-    FROM TICKET T
-    JOIN CONTACTO C ON T.ID_TICKET = C.TICKET_ID
-    JOIN EMPLEADO E ON C.EMPLEADO_ID = E.ID_EMPLEADO
-    WHERE T.INCIDENCIA_ID = 5
-    GROUP BY E.NIVEL
+ SELECT
+    e.NIVEL,
+    COUNT(DISTINCT t.ID_TICKET) AS Num_Incidentes,
+    COUNT(c.TICKET_ID)         AS Num_Contacts
+FROM EMPLEADO e
+JOIN CONTACTO c  ON e.ID_EMPLEADO = c.EMPLEADO_ID
+JOIN TICKET t    ON t.ID_TICKET   = c.TICKET_ID
+GROUP BY e.NIVEL;
+
+
     """
     return query_to_dataframe(query)
 
 
 def fraude_by_client():
-    query = """
-    SELECT T.CLIENTE_ID,
-           COUNT(DISTINCT T.ID_TICKET) AS NUM_INCIDENTS,
-           COUNT(C.TICKET_ID) AS NUM_CONTACTS
-    FROM TICKET T
-    LEFT JOIN CONTACTO C ON T.ID_TICKET = C.TICKET_ID
-    WHERE T.INCIDENCIA_ID = 5
-    GROUP BY T.CLIENTE_ID
+    query = """SELECT 
+    cl.ID_CLIENTE AS Cliente,
+    cl.NOMBRE AS Nombre_Cliente,
+    COUNT(DISTINCT t.ID_TICKET) AS Num_Incidentes,
+    COUNT(c.TICKET_ID) AS Num_Contacts
+FROM CLIENTE cl
+LEFT JOIN TICKET t ON cl.ID_CLIENTE = t.CLIENTE_ID
+LEFT JOIN CONTACTO c ON t.ID_TICKET = c.TICKET_ID
+GROUP BY cl.ID_CLIENTE;
+
     """
     return query_to_dataframe(query)
 
 
 def fraude_by_incident_type():
-    query = """
-    SELECT I.NOMBRE AS INCIDENT_TYPE,
-           COUNT(DISTINCT T.ID_TICKET) AS NUM_INCIDENTS,
-           COUNT(*) AS NUM_CONTACTS
-    FROM TICKET T
-    JOIN CONTACTO C ON T.ID_TICKET = C.TICKET_ID
-    JOIN INCIDENTE I ON T.INCIDENCIA_ID = I.ID_INCIDENTE
-    WHERE T.INCIDENCIA_ID = 5
-    GROUP BY T.INCIDENCIA_ID
+    query = """SELECT 
+    T.INCIDENCIA_ID,
+    I.NOMBRE AS Incident_type,
+    COUNT(DISTINCT T.ID_TICKET) AS Num_Incidents,
+    COUNT(C.TICKET_ID) AS Num_Contacts
+FROM TICKET T
+LEFT JOIN CONTACTO C 
+    ON T.ID_TICKET = C.TICKET_ID
+LEFT JOIN INCIDENTE I 
+    ON T.INCIDENCIA_ID = I.ID_INCIDENTE
+GROUP BY T.INCIDENCIA_ID, I.NOMBRE;
     """
-    return query_to_dataframe(query)
+    return query_to_dataframe(query)# esta ya es correcta
 
 
 def fraude_by_weekday():
     #strftime('%w', ...) para extraer el día (0 = domingo, 1 = lunes...)
 
     query = """
-    SELECT strftime('%w', T.FECHA_APERTURA) AS weekday,
-           COUNT(DISTINCT T.ID_TICKET) AS NUM_INCIDENTS,
-           COUNT(*) AS NUM_CONTACTS
-    FROM TICKET T
-    JOIN CONTACTO C ON T.ID_TICKET = C.TICKET_ID
-    WHERE T.INCIDENCIA_ID = 5
-    GROUP BY weekday
+   SELECT
+    strftime('%w', T.FECHA_APERTURA) AS Dia_Semana,
+    COUNT(DISTINCT T.ID_TICKET) AS Num_Incidents,
+    COUNT(C.TICKET_ID) AS Num_Contacts
+FROM TICKET T
+LEFT JOIN CONTACTO C 
+    ON T.ID_TICKET = C.TICKET_ID
+GROUP BY strftime('%w', T.FECHA_APERTURA);
+
     """
     df = query_to_dataframe(query)
+
     weekday_map = {'0': 'Domingo', '1': 'Lunes', '2': 'Martes', '3': 'Miércoles',
                    '4': 'Jueves', '5': 'Viernes', '6': 'Sábado'}
-    df['weekday'] = df['weekday'].astype(str).map(weekday_map)
+
+    df['Dia_Semana'] = df['Dia_Semana'].astype(str).map(weekday_map)
+
     return df
 
+def fraude_incidents():
+    query = '''
+    SELECT 'Fraude' AS Tipo,
+       COUNT(*) AS Num_Incidents
+    FROM TICKET
+    WHERE INCIDENCIA_ID = 5;
+'''
+    return query_to_dataframe(query)# esta ya es correcta
 
-def compute_basic_stats(df, column):
-    return {
-        'median': df[column].median(),
-        'mean': df[column].mean(),
-        'variance': df[column].var(),
-        'min': df[column].min(),
-        'max': df[column].max()
-    }
+def fraude_employe_contacts():
+    query = """
+ SELECT 
+  'Fraude' AS Tipo,
+  COUNT(c.TICKET_ID) AS Num_Contacts
+FROM CONTACTO c
+JOIN TICKET t ON c.TICKET_ID = t.ID_TICKET
+WHERE t.INCIDENCIA_ID = 5;
+
+
+"""
+    return query_to_dataframe(query)
+
+
+def basic_stats_incidents():
+    query = """WITH emp_incidents AS (
+  SELECT 
+    e.ID_EMPLEADO,
+    COUNT(DISTINCT t.ID_TICKET) AS num_incidents
+  FROM EMPLEADO e
+  JOIN CONTACTO c ON e.ID_EMPLEADO = c.EMPLEADO_ID
+  JOIN TICKET t ON t.ID_TICKET = c.TICKET_ID
+  WHERE t.INCIDENCIA_ID = 5
+  GROUP BY e.ID_EMPLEADO
+),
+ordered_incidents AS (
+  SELECT 
+    num_incidents,
+    ROW_NUMBER() OVER (ORDER BY num_incidents) AS rn,
+    COUNT(*) OVER () AS total
+  FROM emp_incidents
+),
+med_incidents AS (
+  SELECT AVG(num_incidents) AS mediana_incidents
+  FROM ordered_incidents
+  WHERE rn IN ((total+1)/2, (total+2)/2)
+)
+SELECT 
+  AVG(num_incidents) AS media_incidents,
+  (AVG(num_incidents * num_incidents) - AVG(num_incidents)*AVG(num_incidents)) AS varianza_incidents,
+  MIN(num_incidents) AS min_incidents,
+  MAX(num_incidents) AS max_incidents,
+  (SELECT mediana_incidents FROM med_incidents) AS mediana_incidents
+FROM emp_incidents;
+
+"""
+    return query_to_dataframe(query)
+
+
 
 
 def average_time_per_incident():
