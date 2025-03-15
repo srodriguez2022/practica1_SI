@@ -17,8 +17,17 @@ def transform_data():
 
     # Ticket
     for ticket in data["tickets_emitidos"]:
-        # ticket["fecha_apertura"] = ticket.get("fecha_apertura", "None")
-        # ticket["fecha_cierre"] = ticket.get("fecha_cierre", "None")
+
+        # Cambios en la fecha de cierre
+        fecha = None
+        if ticket["contactos_con_empleados"]:
+            fecha = max(iteration["fecha"] for iteration in ticket["contactos_con_empleados"])
+
+        if fecha is not None:
+            ticket["fecha_cierre"] = fecha
+        else:
+            ticket["fecha_cierre"] = ticket.get("fecha_cierre", "None")
+
         ticket["satisfaccion_cliente"] = ticket.get("satisfaccion_cliente", 1)
         ticket["es_mantenimiento"] = int(ticket["es_mantenimiento"])
 
