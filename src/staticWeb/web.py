@@ -139,8 +139,8 @@ def index():
 
 @app.route('/fraude')
 def fraude_analysis():
-    # incidentes de fraude (INCIDENCIA_ID=5)
-    # empleado, nivel, cliente, tipo y día de la semana.
+    # incidents of fraud (INCIDENCIA_ID=5)
+    # employee, level, client, type and week day
     emp_df = queries.fraude_by_employee()
     nivel_df = queries.fraude_by_employee_level()
     cliente_df = queries.fraude_by_client()

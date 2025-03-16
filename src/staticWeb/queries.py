@@ -3,7 +3,7 @@ import sqlite3
 import os
 
 
-#database = "../database/data.db"
+
 database_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'database', 'data.db')
 
 
@@ -47,7 +47,7 @@ def incidents_per_employee():
         "SELECT EMPLEADO_ID,COUNT (DISTINCT TICKET_ID) AS NUM_INCIDENTS  FROM CONTACTO GROUP BY EMPLEADO_ID")
 
 
-#querys para el analisis de fraude
+# queries for fraud analysis
 
 def fraude_by_employee():
     query = """
@@ -120,11 +120,11 @@ LEFT JOIN INCIDENTE I
     ON T.INCIDENCIA_ID = I.ID_INCIDENTE
 GROUP BY T.INCIDENCIA_ID, I.NOMBRE;
     """
-    return query_to_dataframe(query)# esta ya es correcta
+    return query_to_dataframe(query)
 
 
 def fraude_by_weekday():
-    #strftime('%w', ...) para extraer el día (0 = domingo, 1 = lunes...)
+    # strftime('%w', ...) for extracting the day (0 = sunday, 1 = monday...)
 
     query = """
    SELECT
@@ -146,6 +146,7 @@ GROUP BY strftime('%w', T.FECHA_APERTURA);
 
     return df
 
+
 def fraude_incidents():
     query = '''
     SELECT 'Fraude' AS Tipo,
@@ -153,7 +154,8 @@ def fraude_incidents():
     FROM TICKET
     WHERE INCIDENCIA_ID = 5;
 '''
-    return query_to_dataframe(query)# esta ya es correcta
+    return query_to_dataframe(query)
+
 
 def fraude_employe_contacts():
     query = """
