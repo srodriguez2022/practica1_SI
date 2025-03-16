@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html LANG="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados del Sistema ETL</title>
+</head>
+<body>
+    <h1 class="text-center">Tablas y resultados del Sistema ETL</h1>
+
+    <div style="text-align: right; margin: 1rem;">
+    <a href="{{ url_for('fraude_analysis') }}" class="btn btn-secondary">Ir a análisis de Fraude</a>
+    </div>
+
+    <h2>Muestras:</h2>
+    {{samples|safe}}
+
+    <h2>Tickets con satisfaccion >=5</h2>
+    {{tickets|safe}}
+
+    <h2>Número de incidentes por cliente</h2>
+    {{incidents_per_client|safe}}
+
+    <h2>Número de horas por incidente</h2>
+    {{hours_incidents|safe}}
+
+    <h2>Número de horas por empleado</h2>
+    {{hours_employee|safe}}
+
+    <h2>Tiempo entre apertura y cierre de incidentes</h2>
+    {{time_incident|safe}}
+
+    <h2>Número de incidentes por empleados</h2>
+    {{incident_employee|safe}}
+
+    <h2>Tablas resultantes de las consultas usadas para diseñar los gráficos:</h2>
+    <h2>Media de tiempo (apertura-cierre) de los incidentes:</h2>
+    {{table_graph1|safe}}
+    <h2>Tiempo de resolución por tipo de incidente:</h2>
+    {{table_graph2|safe}}
+    <h2>5 clientes más críticos:</h2>
+    {{table_graph3|safe}}
+    <h2>Número total de actuaciones por empleado:</h2>
+    {{table_graph4|safe}}
+    <h2>Número total de actuaciones por día de la semana:</h2>
+    {{table_graph5|safe}}
+
+    <h2>Estadísticas</h2>
+    <ul>
+        <li>Número de muestras totales:{{stats.Numero_de_muestras_totales}}</li>
+        <li>Media del total de incidentes valorados en 5 o más:{{stats.Media_Incidentes_valorados}}</li>
+        <li>Desviación estándar del total de incidentes valorados en 5 o más:{{stats.Desviacion_Incidentes_valorados}}</li>
+        <li>Media del total del número de incidentes por cliente:{{stats.Media_incidentes_por_clientes}}</li>
+        <li>Desviación estándar del total del número de incidentes por cliente:{{stats.Desviacion_incidentes_por_clientes}}</li>
+        <li>Media del número de horas totales realizadas en cada incidente:{{stats.Media_horas_por_incidentes}}</li>
+        <li>Desviación estándar del número de horas totales realizadas en cada incidente:{{stats.Desviacion_horas_por_incidentes}}</li>
+        <li>Valor mínimo del total de horas realizadas por los empleados:{{stats.Minimo_horas_por_empleado}}</li>
+        <li>Valor máximo del total de horas realizadas por los empleados:{{stats.Maximo_horas_pr_empleado}}</li>
+        <li>Valor mínimo tiempo entre apertura y cierre de incidente:{{stats.Minimo_tiempo_por_incidente}}</li>
+        <li>Valor máximo tiempo entre apertura y cierre de incidente:{{stats.Maximo_tiempo_incidente}}</li>
+        <li>Valor mínimo del número de incidentes atendidos por cada empleado:{{stats.Minimo_incidentes_por_empleado}}</li>
+        <li>Valor máximo del número de incidentes atendidos por cada empleado:{{stats.Maximo_incidentes_por_empleado}}</li>
+    </ul>
+
+    <h2>Gráficos</h2>
+    <h2>Media de tiempos de incidentes</h2>
+    <img src="data:image/png;base64,{{graph_1}}" alt="Gráfico">
+    <h2>Tiempo de resolución por tipo de incidente</h2>
+    <img src="data:image/png;base64,{{graph_2}}" alt="Gráfico2">
+    <h2>5 clientes más críticos</h2>
+    <img src="data:image/png;base64,{{graph_3}}" alt="Gráfico3">
+
+    <h2>Número de actuaciones por empleado:</h2>
+    <img src="data:image/png;base64,{{graph_4}}" alt="Gráfico4">
+    <h2>Número de actuaciones por día de la semana:</h2>
+    <img src="data:image/png;base64,{{graph_5}}" alt="Gráfico5">
+
+</body>
+</html>

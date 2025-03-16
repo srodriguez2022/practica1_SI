@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Análisis de Fraude</title>
+</head>
+<body>
+    <h1 class="text-center">Análisis de Fraude</h1>
+
+    <div style="text-align: right; margin: 1rem;">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Inicio</a>
+    </div>
+
+
+    <h2>Incidentes por empleado</h2>
+    {{ emp_table|safe }}
+
+    <h2>Incidentes por nivel de empleado</h2>
+    {{ nivel_table|safe }}
+
+    <h2>Incidentes por cliente</h2>
+    {{ cliente_table|safe }}
+
+    <h2>Número incidentes por tipo </h2>
+    {{ inci_table|safe }}
+
+    <h2>Incidentes día de la semana</h2>
+    {{ weekday_table|safe }}
+
+    <h2>Numero incidentes tipo fraude</h2>
+    {{ fraude_table|safe }}
+
+    <h2>Contactos por los empleados para Fraude</h2>
+    {{ contacts_table|safe }}
+
+   <h2>Estadísticas de fraude (por empleado)</h2>
+    {{ stats_table|safe }}
+
+
+</body>
+</html>
