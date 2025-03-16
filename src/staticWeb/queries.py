@@ -53,7 +53,7 @@ def fraude_by_employee():
     query = """
 SELECT
     e.ID_EMPLEADO AS EMPLEADO,
-    COALESCE(inc.num_incidentes, 0) AS Num_Incidents,
+    COALESCE(inc.num_incidents, 0) AS Num_Incidents,
     COALESCE(ct.num_contacts, 0) AS Num_Contacts
 FROM EMPLEADO e
 LEFT JOIN (
