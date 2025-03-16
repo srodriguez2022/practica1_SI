@@ -204,8 +204,6 @@ FROM emp_incidents;
     return query_to_dataframe(query)
 
 
-
-
 def average_time_per_incident():
     return query_to_dataframe(
         "SELECT ES_MANTENIMIENTO, AVG(JULIANDAY(FECHA_CIERRE) - JULIANDAY(FECHA_APERTURA)) AS AVG_TIME FROM TICKET "
@@ -223,3 +221,14 @@ def critical_clients():
                               "ON T.INCIDENCIA_ID = I.ID_INCIDENTE JOIN CLIENTE C ON T.CLIENTE_ID = C.ID_CLIENTE "
                               "WHERE T.ES_MANTENIMIENTO = 1 AND I.ID_INCIDENTE <> 1 GROUP BY C.NOMBRE ORDER BY "
                               "INCIDENT_COUNT DESC LIMIT 5")
+
+
+def acts_per_weekday():
+    return query_to_dataframe("SELECT strftime('%w', C.FECHA) AS WEEKDAY, COUNT(*) AS NUM_ACTS FROM CONTACTO C GROUP "
+                              "BY WEEKDAY ORDER BY WEEKDAY")
+
+
+def acts_per_employee():
+    return query_to_dataframe("SELECT EMPLEADO_ID, COUNT(*) AS NUM_ACTS FROM CONTACTO GROUP BY EMPLEADO_ID ORDER BY "
+                              "NUM_ACTS DESC")
+

@@ -81,6 +81,41 @@ def index():
     img3.seek(0)
     graph_3 = base64.b64encode(img3.getvalue()).decode()
 
+    # Graph 4
+
+    acts_per_employee_df = queries.acts_per_employee()
+
+    fig4, ax4 = plt.subplots(figsize=(12, 4))
+    ax4.bar(acts_per_employee_df['EMPLEADO_ID'], acts_per_employee_df['NUM_ACTS'], color='blue')
+
+    ax4.set_title("Número total de actuaciones por empleado")
+    ax4.set_xlabel("ID del empleado")
+    ax4.set_ylabel("Número de actuaciones")
+
+    img4 = io.BytesIO()
+    fig4.savefig(img4, format='png')
+    img4.seek(0)
+    graph_4 = base64.b64encode(img4.getvalue()).decode()
+
+    # Graph 5
+
+    acts_per_weekday_df = queries.acts_per_weekday()
+
+    weekday_map = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado'}
+    acts_per_weekday_df['WEEKDAY'] = acts_per_weekday_df['WEEKDAY'].astype(int).map(weekday_map)
+
+    fig5, ax5 = plt.subplots(figsize=(12, 4))
+    ax5.bar(acts_per_weekday_df['WEEKDAY'], acts_per_weekday_df['NUM_ACTS'], color='green')
+
+    ax5.set_title("Número total de actuaciones por día de la semana")
+    ax5.set_xlabel("Día de la semana")
+    ax5.set_ylabel("Número de actuaciones")
+
+    img5 = io.BytesIO()
+    fig5.savefig(img5, format='png')
+    img5.seek(0)
+    graph_5 = base64.b64encode(img5.getvalue()).decode()
+
     return render_template("index.html",
                            samples=samples_df.to_html(classes='table table-bordered'),
                            tickets=tickets_valorated_5_df.to_html(classes='table table-bordered'),
@@ -95,7 +130,11 @@ def index():
                            table_graph2=resolution_time_per_incident_df.to_html(classes='table table-bordered'),
                            graph_2=graph_2,
                            table_graph3=critical_clients_df.to_html(classes='table table-bordered'),
-                           graph_3=graph_3)
+                           graph_3=graph_3,
+                           table_graph4=acts_per_employee_df.to_html(classes='table table-bordered'),
+                           graph_4=graph_4,
+                           table_graph5=acts_per_weekday_df.to_html(classes='table table-bordered'),
+                           graph_5=graph_5)
 
 
 @app.route('/fraude')
