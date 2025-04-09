@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tablas resultantes de las consultas usadas para diseñar los gráficos</title>
+</head>
+<body>
+    <h1 class="text-center">Tablas resultantes de las consultas usadas para diseñar los gráficos:</h1>
+
+    <div style="text-align: right; margin: 1rem;">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Inicio</a>
+    </div>
+
+    <h2>Media de tiempo (apertura-cierre) de los incidentes:</h2>
+    {{table_graph1|safe}}
+    <h2>Tiempo de resolución por tipo de incidente:</h2>
+    {{table_graph2|safe}}
+    <h2>5 clientes más críticos:</h2>
+    {{table_graph3|safe}}
+    <h2>Número total de actuaciones por empleado:</h2>
+    {{table_graph4|safe}}
+    <h2>Número total de actuaciones por día de la semana:</h2>
+    {{table_graph5|safe}}
+
+</body>
+</html>

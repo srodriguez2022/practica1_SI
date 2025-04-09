@@ -33,9 +33,17 @@
     <h2>Contactos por los empleados para Fraude</h2>
     {{ contacts_table|safe }}
 
-   <h2>Estadísticas de fraude (por empleado)</h2>
-    {{ stats_table|safe }}
+    <h2>Tabla para las estadísticas</h2>
+    {{table|safe}}
 
+    <h2>Estadisticas de fraude:</h2>
+    <ul>
+        <li>Media de incidentes:{{stats.Media_de_incidentes}}</li>
+        <li>Varianza de incidentes:{{stats.Varianza_de_incidentes}}</li>
+        <li>Valor mínimo de incidentes:{{stats.Valor_mínimo_de_incidentes}}</li>
+        <li>Valor máximo de incidentes:{{stats.Valor_máximo_de_incidentes}}</li>
+        <li>Mediana de incidentes:{{stats.Mediana_de_incidentes}}</li>
+    </ul>
 
 </body>
 </html>

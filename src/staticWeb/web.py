@@ -16,9 +16,6 @@ def index():
     hours_per_employee_df = queries.hours_per_employee()
     time_per_incident_df = queries.time_per_incident()
     incidents_per_employee_df = queries.incidents_per_employee()
-    average_time_incident_df = queries.average_time_per_incident()
-    resolution_time_per_incident_df = queries.resolution_time_per_incident()
-    critical_clients_df = queries.critical_clients()
 
     stats = {
         "Numero_de_muestras_totales": len(samples_df),
@@ -36,6 +33,38 @@ def index():
         "Maximo_incidentes_por_empleado": incidents_per_employee_df['NUM_INCIDENTS'].max(),
     }
 
+    return render_template("index.html",
+                           samples=samples_df.to_html(classes='table table-bordered'),
+                           tickets=tickets_valorated_5_df.to_html(classes='table table-bordered'),
+                           incidents_per_client=incidents_per_client_df.to_html(classes='table table-bordered'),
+                           hours_incidents=hours_per_incident_df.to_html(classes='table table-bordered'),
+                           hours_employee=hours_per_employee_df.to_html(classes='table table-bordered'),
+                           time_incident=time_per_incident_df.to_html(classes='table table-bordered'),
+                           incident_employee=incidents_per_employee_df.to_html(classes='table table-bordered'),
+                           stats=stats, )
+
+
+@app.route('/tables')
+def tables_graph():
+    average_time_incident_df = queries.average_time_per_incident()
+    resolution_time_per_incident_df = queries.resolution_time_per_incident()
+    critical_clients_df = queries.critical_clients()
+    acts_per_employee_df = queries.acts_per_employee()
+    acts_per_weekday_df = queries.acts_per_weekday()
+
+    return render_template("tables_for_graphs.html",
+                           table_graph1=average_time_incident_df.to_html(classes='table table-bordered'),
+                           table_graph2=resolution_time_per_incident_df.to_html(classes='table table-bordered'),
+                           table_graph3=critical_clients_df.to_html(classes='table table-bordered'),
+                           table_graph4=acts_per_employee_df.to_html(classes='table table-bordered'),
+                           table_graph5=acts_per_weekday_df.to_html(classes='table table-bordered'))
+
+
+@app.route('/graphs')
+def graphs_graph():
+    average_time_incident_df = queries.average_time_per_incident()
+    resolution_time_per_incident_df = queries.resolution_time_per_incident()
+    critical_clients_df = queries.critical_clients()
     # Graph 1
     fig, ax = plt.subplots()
     ax.bar(average_time_incident_df['ES_MANTENIMIENTO'].astype(str), average_time_incident_df['AVG_TIME'])
@@ -116,24 +145,11 @@ def index():
     img5.seek(0)
     graph_5 = base64.b64encode(img5.getvalue()).decode()
 
-    return render_template("index.html",
-                           samples=samples_df.to_html(classes='table table-bordered'),
-                           tickets=tickets_valorated_5_df.to_html(classes='table table-bordered'),
-                           incidents_per_client=incidents_per_client_df.to_html(classes='table table-bordered'),
-                           hours_incidents=hours_per_incident_df.to_html(classes='table table-bordered'),
-                           hours_employee=hours_per_employee_df.to_html(classes='table table-bordered'),
-                           time_incident=time_per_incident_df.to_html(classes='table table-bordered'),
-                           incident_employee=incidents_per_employee_df.to_html(classes='table table-bordered'),
-                           stats=stats,
-                           table_graph1=average_time_incident_df.to_html(classes='table table-bordered'),
+    return render_template("graphs.html",
                            graph_1=graph_1,
-                           table_graph2=resolution_time_per_incident_df.to_html(classes='table table-bordered'),
                            graph_2=graph_2,
-                           table_graph3=critical_clients_df.to_html(classes='table table-bordered'),
                            graph_3=graph_3,
-                           table_graph4=acts_per_employee_df.to_html(classes='table table-bordered'),
                            graph_4=graph_4,
-                           table_graph5=acts_per_weekday_df.to_html(classes='table table-bordered'),
                            graph_5=graph_5)
 
 
@@ -146,9 +162,21 @@ def fraude_analysis():
     cliente_df = queries.fraude_by_client()
     inci_df = queries.fraude_by_incident_type()
     weekday_df = queries.fraude_by_weekday()
+    weekday_map = {'0': 'Domingo', '1': 'Lunes', '2': 'Martes', '3': 'Miércoles',
+                   '4': 'Jueves', '5': 'Viernes', '6': 'Sábado'}
+
+    weekday_df['Dia_Semana'] = weekday_df['Dia_Semana'].astype(str).map(weekday_map)
     fraude_df = queries.fraude_incidents()
-    contacts_df = queries.fraude_employe_contacts()
-    stats = queries.basic_stats_incidents()
+    contacts_df = queries.fraude_employee_contacts()
+    fraude_per_employee_df = queries.fraude_per_employee()
+
+    stats = {
+        "Media_de_incidentes": fraude_per_employee_df['num_incidents'].mean(),
+        "Varianza_de_incidentes": fraude_per_employee_df['num_incidents'].var(),
+        "Valor_mínimo_de_incidentes": fraude_per_employee_df['num_incidents'].min(),
+        "Valor_máximo_de_incidentes": fraude_per_employee_df['num_incidents'].max(),
+        "Mediana_de_incidentes": fraude_per_employee_df['num_incidents'].median(),
+    }
 
     return render_template(
         "fraude.html",
@@ -159,6 +187,6 @@ def fraude_analysis():
         weekday_table=weekday_df.to_html(classes='table table-bordered', index=False),
         fraude_table=fraude_df.to_html(classes='table table-bordered', index=False),
         contacts_table=contacts_df.to_html(classes='table table-bordered', index=False),
-        stats_table=stats.to_html(classes='table table-bordered', index=False)
+        table=fraude_per_employee_df.to_html(classes='table table-bordered'),
+        stats=stats
     )
-
