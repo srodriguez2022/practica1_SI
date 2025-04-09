@@ -1,6 +1,6 @@
 import base64
 import io
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from matplotlib import pyplot as plt
 from staticWeb import queries
 
@@ -190,3 +190,20 @@ def fraude_analysis():
         table=fraude_per_employee_df.to_html(classes='table table-bordered'),
         stats=stats
     )
+
+
+@app.route('/cmi', methods=['GET', 'POST'])
+def cmi():
+    top_x_clientes = 5
+    top_x_incidents = 5
+    if request.method == 'POST':
+        top_x_clientes = int(request.form['top_x_clientes'])
+        top_x_incidents = int(request.form['top_x_incidents'])
+
+    top_clients_most_incidents_df = queries.top_clients_most_incidents(top_x_clientes)
+    top_incidents_type_by_resolution_time_df = queries.top_incidents_type_by_resolution_time(top_x_incidents)
+    return render_template("cmi.html",
+                           top_clients_most_incidents=top_clients_most_incidents_df.to_html(
+                               classes='table table-striped'),
+                           top_incidents_type_by_resolution_time=top_incidents_type_by_resolution_time_df.to_html(
+                               classes='table table-striped'))
